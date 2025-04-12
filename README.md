@@ -1,6 +1,6 @@
-# html to shadcn converter
+# shadcn html to shadcn parser
 
-This project provides a Python-based tool for converting HTML into ShadCN components using Beautiful Soup. It simplifies the process of transforming raw HTML into reusable and styled components.
+This project provides a Python-based tool for parsing precompiled shadcn HTML into ShadCN components using Beautiful Soup. It simplifies the process of transforming raw HTML into reusable and styled components.
 
 ## Installation
 

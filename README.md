@@ -35,7 +35,7 @@ jsx_output = converter.convert(html_input)
 
 print(jsx_output)
 # Output:
-# <Button variant="ghost" className="custom-class">Login</Button>
+# <Button variant="ghost" size="default" className="custom-class">Login</Button>
 ```
 
 ## Example Result

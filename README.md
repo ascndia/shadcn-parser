@@ -2,7 +2,7 @@
 
 This project provides a Python-based tool for converting HTML into ShadCN components using Beautiful Soup. It simplifies the process of transforming raw HTML into reusable and styled components.
 
-> Some ShadCN components that rely on Class Variance Authority (CVA) may not render or convert properly at this time.  We're actively working on a fix to support CVA-based components more reliably.
+> Some ShadCN components that rely on twMerge may not render or convert properly at this time.  We're actively working on a fix to support twMerge-based components more reliably.
 
 ## Installation
 

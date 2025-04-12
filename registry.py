@@ -8,7 +8,7 @@ COMPONENTS = {
             tag="button",
             match_pattern={
                 'signature_classes': {
-                    # Immutable identity classes (never customized)
+
                     "ring-offset-background",
                     "disabled:pointer-events-none", "disabled:opacity-50",
                     "[&_svg]:pointer-events-none", "[&_svg]:size-4",
@@ -33,7 +33,8 @@ COMPONENTS = {
                     }
                 },
                 'style_classes': {
-                    # Default styles that can be customized/overridden
+                    "focus-visible:outline-none",
+                    "focus-visible:ring-2",
                     "rounded-md", "text-sm", "font-medium",
                     "gap-2", "whitespace-nowrap", "transition-colors",
                     "inline-flex", "items-center", "justify-center",
@@ -98,17 +99,17 @@ COMPONENTS = {
         ),
         "BadgeLegacy": Component(
             name="Badge",
-            tag="div", # Based on the React component rendering a div
+            tag="div", 
             match_pattern={
                 'signature_classes': {
-                    # Base classes from cva related to interaction/state
+                    
                     "transition-colors",
                     "focus:outline-none",
                     "focus:ring-2",
                     "focus:ring-ring",
                     "focus:ring-offset-2",
                 },
-                'data_attributes': {}, # No specific data attributes in the React example
+                'data_attributes': {}, 
                 'variant_patterns': {
                     "variant": {
                         "default": {
@@ -129,7 +130,7 @@ COMPONENTS = {
                     }
                 },
                 'style_classes': {
-                    # Base classes from cva related to layout/appearance
+                    
                     "inline-flex", "items-center", "rounded-full", "border",
                     "px-2.5", "py-0.5", "text-xs", "font-semibold",
                 }
@@ -137,12 +138,12 @@ COMPONENTS = {
             config={
                 'self_closing': False,
                 'ignore_children': False,
-                'output_blacklist': set() # No attributes to blacklist from the example
+                'output_blacklist': set() 
             }
         ),
         "Separator": Component(
             name="Separator",
-            tag="div",  # Radix `SeparatorPrimitive.Root` renders a div by default
+            tag="div",  
             match_pattern={
                 'signature_classes': {
                     "shrink-0",
@@ -175,12 +176,12 @@ COMPONENTS = {
             name="Card",
             tag="div",
             match_pattern={
-                'signature_classes': {
-                    "rounded-xl", "border", "bg-card", "text-card-foreground", "shadow"
-                },
+                'signature_classes': {"bg-card", "text-card-foreground"},
                 'data_attributes': {},
-                'variant_patterns': {},  # No dynamic variants
-                'style_classes': set()
+                'variant_patterns': {},  
+                'style_classes': {
+                    "rounded-xl", "border", "bg-card", "text-card-foreground", "shadow"
+                }
             },
             config={
                 'self_closing': False,
@@ -285,7 +286,7 @@ COMPONENTS = {
                     "selection:bg-primary", "selection:text-primary-foreground",
                 },
                 'data_attributes': {"data-slot": "input"},
-                'variant_patterns': {},  # no built-in variants in shadcn's Input
+                'variant_patterns': {},  
                 'style_classes': {
                     "h-9", "rounded-md", "border", "border-input", "px-3", "py-1",
                     "text-base", "md:text-sm", "placeholder:text-muted-foreground",
@@ -312,7 +313,7 @@ COMPONENTS = {
             },
             config={
                 'self_closing': True,
-                'ignore_children': True,  # Prevents rendering inner SVG paths
+                'ignore_children': True,  
                 'output_blacklist': {
                     "xmlns", "stroke", "fill", "viewbox", "aria-hidden",
                     "focusable", "width", "height", "stroke-width", "color",
@@ -359,22 +360,22 @@ COMPONENTS = {
         ),
         "FormLabel": Component(
             name="FormLabel",
-            tag="label", # Inherits from Label component
+            tag="label", 
             match_pattern={
                 'signature_classes': {
-                    # Inherited from Label
+                    
                     "leading-none", "select-none",
                     "group-data-[disabled=true]:pointer-events-none",
                     "group-data-[disabled=true]:opacity-50",
                     "peer-disabled:cursor-not-allowed",
                     "peer-disabled:opacity-50",
-                    # Added by FormLabel
+                    
                     "data-[error=true]:text-destructive"
                  },
                 'data_attributes': {"data-slot": "form-label"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Inherited from Label
+                    
                     "gap-2", "font-medium", "text-sm", "items-center", "flex"
                 }
             },
@@ -386,17 +387,17 @@ COMPONENTS = {
         ),
         "FormControl": Component(
             name="FormControl",
-            tag="Slot", # Special case: Slot merges props, doesn't render itself
+            tag="Slot", 
             match_pattern={
-                'signature_classes': set(), # Attributes are added dynamically
+                'signature_classes': set(), 
                 'data_attributes': {"data-slot": "form-control"},
                 'variant_patterns': {},
                 'style_classes': set()
             },
             config={
-                'self_closing': False, # Depends on the child
+                'self_closing': False, 
                 'ignore_children': False,
-                 # These attributes are dynamically added based on context
+                 
                 'output_blacklist': {"data-slot", "aria-describedby", "aria-invalid"}
             }
         ),
@@ -447,7 +448,7 @@ COMPONENTS = {
         ),
         "Progress": Component(
             name="Progress",
-            tag="div", # Radix ProgressPrimitive.Root renders a div
+            tag="div", 
             match_pattern={
                 'signature_classes': set(),
                 'data_attributes': {"data-slot": "progress"},
@@ -464,7 +465,7 @@ COMPONENTS = {
         ),
                 "NavigationMenu": Component(
             name="NavigationMenu",
-            tag="nav", # Radix NavigationMenuPrimitive.Root
+            tag="nav", 
             match_pattern={
                 'signature_classes': {
                     "group/navigation-menu", 
@@ -484,7 +485,7 @@ COMPONENTS = {
         ),
         "NavigationMenuList": Component(
             name="NavigationMenuList",
-            tag="ul", # Radix NavigationMenuPrimitive.List
+            tag="ul", 
             match_pattern={
                 'signature_classes': {
                     "group", "list-none",
@@ -503,7 +504,7 @@ COMPONENTS = {
         ),
         "NavigationMenuItem": Component(
             name="NavigationMenuItem",
-            tag="li", # Radix NavigationMenuPrimitive.Item
+            tag="li", 
             match_pattern={
                 'signature_classes': set(),
                 'data_attributes': {"data-slot": "navigation-menu-item"},
@@ -518,7 +519,7 @@ COMPONENTS = {
         ),
         "NavigationMenuTrigger": Component(
             name="NavigationMenuTrigger",
-            tag="button", # Radix NavigationMenuPrimitive.Trigger
+            tag="button", 
             match_pattern={
                 'signature_classes': {
                     "group", "disabled:pointer-events-none", "disabled:opacity-50",
@@ -543,17 +544,17 @@ COMPONENTS = {
         ),
         "NavigationMenuContent": Component(
             name="NavigationMenuContent",
-            tag="div", # Radix NavigationMenuPrimitive.Content
+            tag="div", 
             match_pattern={
                 'signature_classes': {
-                    # Motion animations
+                    
                     "data-[motion^=from-]:animate-in", "data-[motion^=to-]:animate-out",
                     "data-[motion^=from-]:fade-in", "data-[motion^=to-]:fade-out",
                     "data-[motion=from-end]:slide-in-from-right-52",
                     "data-[motion=from-start]:slide-in-from-left-52",
                     "data-[motion=to-end]:slide-out-to-right-52",
                     "data-[motion=to-start]:slide-out-to-left-52",
-                    # Viewport=false specific styles/animations (complex selectors)
+                    
                     "group-data-[viewport=false]/navigation-menu:bg-popover",
                     "group-data-[viewport=false]/navigation-menu:text-popover-foreground",
                     "group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in",
@@ -569,14 +570,14 @@ COMPONENTS = {
                     "group-data-[viewport=false]/navigation-menu:border",
                     "group-data-[viewport=false]/navigation-menu:shadow",
                     "group-data-[viewport=false]/navigation-menu:duration-200",
-                    # Descendant link focus styles (complex selectors, assuming **: means descendant)
+                    
                     "**:data-[slot=navigation-menu-link]:focus:ring-0", 
                     "**:data-[slot=navigation-menu-link]:focus:outline-none"
                 },
                 'data_attributes': {"data-slot": "navigation-menu-content"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # General layout and positioning (more likely to be customized)
+                    
                     "top-0", "left-0", "w-full", "p-2", "pr-2.5",
                     "md:absolute", "md:w-auto"
                 }
@@ -593,22 +594,22 @@ COMPONENTS = {
         ),
         "NavigationMenuViewport": Component(
             name="NavigationMenuViewport",
-            tag="div", # Radix NavigationMenuPrimitive.Viewport
+            tag="div", 
             match_pattern={
                 'signature_classes': {
-                    # State-based animations
+                    
                     "data-[state=open]:animate-in", "data-[state=closed]:animate-out",
                     "data-[state=closed]:zoom-out-95", "data-[state=open]:zoom-in-90"
                 },
                 'data_attributes': {"data-slot": "navigation-menu-viewport"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Layout, positioning, appearance (more likely to be customized)
+                    
                     "origin-top-center", "bg-popover", "text-popover-foreground",
                     "relative", "mt-1.5", "overflow-hidden", "rounded-md", "border", "shadow",
-                    "h-[var(--radix-navigation-menu-viewport-height)]", # Added
-                    "w-full", # Added
-                    "md:w-[var(--radix-navigation-menu-viewport-width)]" # Added
+                    "h-[var(--radix-navigation-menu-viewport-height)]", 
+                    "w-full", 
+                    "md:w-[var(--radix-navigation-menu-viewport-width)]" 
                 }
             },
             config={
@@ -620,7 +621,7 @@ COMPONENTS = {
         ),
         "NavigationMenuLink": Component(
             name="NavigationMenuLink",
-            tag="a", # Radix NavigationMenuPrimitive.Link
+            tag="a", 
             match_pattern={
                 'signature_classes': {
                     "data-[active=true]:focus:bg-accent", "data-[active=true]:hover:bg-accent",
@@ -646,7 +647,7 @@ COMPONENTS = {
         ),
         "NavigationMenuIndicator": Component(
             name="NavigationMenuIndicator",
-            tag="div", # Radix NavigationMenuPrimitive.Indicator
+            tag="div", 
             match_pattern={
                 'signature_classes': {
                     "data-[state=visible]:animate-in", "data-[state=hidden]:animate-out",
@@ -667,12 +668,12 @@ COMPONENTS = {
         ),
                 "DialogTrigger": Component(
             name="DialogTrigger",
-            tag="button", # Radix DialogPrimitive.Trigger (often a button)
+            tag="button", 
             match_pattern={
                 'signature_classes': set(),
                 'data_attributes': {"data-slot": "dialog-trigger"},
                 'variant_patterns': {},
-                'style_classes': set() # Styles are typically added via Button component or className
+                'style_classes': set() 
             },
             config={
                 'self_closing': False,
@@ -682,7 +683,7 @@ COMPONENTS = {
         ),
         "DialogPortal": Component(
             name="DialogPortal",
-            tag="div", # Radix DialogPrimitive.Portal renders a div by default
+            tag="div", 
             match_pattern={
                 'signature_classes': set(),
                 'data_attributes': {"data-slot": "dialog-portal"},
@@ -691,19 +692,19 @@ COMPONENTS = {
             },
             config={
                 'self_closing': False,
-                'ignore_children': False, # Renders children elsewhere
+                'ignore_children': False, 
                 'output_blacklist': {"data-slot"},
-                'skip_this_element': True # Portal itself is not styled or directly rendered in place
+                'skip_this_element': True 
             }
         ),
         "DialogClose": Component(
             name="DialogClose",
-            tag="button", # Radix DialogPrimitive.Close (often a button)
+            tag="button", 
             match_pattern={
                 'signature_classes': set(),
                 'data_attributes': {"data-slot": "dialog-close"},
                 'variant_patterns': {},
-                'style_classes': set() # Styles are typically added via Button component or className
+                'style_classes': set() 
             },
             config={
                 'self_closing': False,
@@ -713,32 +714,32 @@ COMPONENTS = {
         ),
         "DialogOverlay": Component(
             name="DialogOverlay",
-            tag="div", # Radix DialogPrimitive.Overlay renders a div
+            tag="div", 
             match_pattern={
                 'signature_classes': {
-                    # State-based animations
+                    
                     "data-[state=open]:animate-in", "data-[state=closed]:animate-out", 
                     "data-[state=closed]:fade-out-0", "data-[state=open]:fade-in-0"
                 },
                 'data_attributes': {"data-slot": "dialog-overlay"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Positioning and appearance
+                    
                     "fixed", "inset-0", "z-50", "bg-black/50"
                 }
             },
             config={
-                'self_closing': False, # Can have content, though usually doesn't
+                'self_closing': False, 
                 'ignore_children': False,
                 'output_blacklist': {"data-slot", "data-state"}
             }
         ),
         "DialogContent": Component(
             name="DialogContent",
-            tag="div", # Radix DialogPrimitive.Content renders a div
+            tag="div", 
             match_pattern={
                 'signature_classes': {
-                    # State-based animations
+                    
                     "data-[state=open]:animate-in", "data-[state=closed]:animate-out", 
                     "data-[state=closed]:fade-out-0", "data-[state=open]:fade-in-0", 
                     "data-[state=closed]:zoom-out-95", "data-[state=open]:zoom-in-95"
@@ -746,7 +747,7 @@ COMPONENTS = {
                 'data_attributes': {"data-slot": "dialog-content"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Appearance, layout, positioning
+                    
                     "bg-background", "fixed", "top-[50%]", "left-[50%]", "z-50", "grid", 
                     "w-full", "max-w-[calc(100%-2rem)]", "translate-x-[-50%]", "translate-y-[-50%]", 
                     "gap-4", "rounded-lg", "border", "p-6", "shadow-lg", "duration-200", 
@@ -767,7 +768,7 @@ COMPONENTS = {
                 'data_attributes': {"data-slot": "dialog-header"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Layout and text alignment
+                    
                     "flex", "flex-col", "gap-2", "text-center", "sm:text-left"
                 }
             },
@@ -785,7 +786,7 @@ COMPONENTS = {
                 'data_attributes': {"data-slot": "dialog-footer"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Layout and justification
+                    
                     "flex", "flex-col-reverse", "gap-2", "sm:flex-row", "sm:justify-end"
                 }
             },
@@ -797,13 +798,13 @@ COMPONENTS = {
         ),
         "DialogTitle": Component(
             name="DialogTitle",
-            tag="h2", # Radix DialogPrimitive.Title renders h2 by default
+            tag="h2", 
             match_pattern={
                 'signature_classes': set(),
                 'data_attributes': {"data-slot": "dialog-title"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Typography
+                    
                     "text-lg", "leading-none", "font-semibold"
                 }
             },
@@ -815,13 +816,13 @@ COMPONENTS = {
         ),
         "DialogDescription": Component(
             name="DialogDescription",
-            tag="p", # Radix DialogPrimitive.Description renders p by default
+            tag="p", 
             match_pattern={
                 'signature_classes': set(),
                 'data_attributes': {"data-slot": "dialog-description"},
                 'variant_patterns': {},
                 'style_classes': {
-                    # Typography and color
+                    
                     "text-muted-foreground", "text-sm"
                 }
             },
@@ -829,6 +830,109 @@ COMPONENTS = {
                 'self_closing': False,
                 'ignore_children': False,
                 'output_blacklist': {"data-slot", "id"}
+            }
+        ),
+                "Tabs": Component(
+            name="Tabs",
+            tag="div", 
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "tabs"},
+                'variant_patterns': {},
+                'style_classes': {"flex", "flex-col", "gap-2"}
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-orientation"}
+            }
+        ),
+        "TabsList": Component(
+            name="TabsList",
+            tag="div", 
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "tabs-list"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "bg-muted", "text-muted-foreground", "inline-flex", "h-9", "w-fit",
+                    "items-center", "justify-center", "rounded-lg", "p-[3px]"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "role", "aria-orientation", "tabindex", "data-orientation"}
+            }
+        ),
+        "TabsTrigger": Component(
+            name="TabsTrigger",
+            tag="button", 
+            match_pattern={
+                'signature_classes': {
+                    "data-[state=active]:bg-background", "dark:data-[state=active]:text-foreground",
+                    "focus-visible:border-ring", "focus-visible:ring-ring/50", "focus-visible:outline-ring",
+                    "dark:data-[state=active]:border-input", "dark:data-[state=active]:bg-input/30",
+                    "transition-[color,box-shadow]", "focus-visible:ring-[3px]", "focus-visible:outline-1",
+                    "disabled:pointer-events-none", "disabled:opacity-50", "data-[state=active]:shadow-sm",
+                    "[&_svg]:pointer-events-none", "[&_svg]:shrink-0", "[&_svg:not([class*='size-'])]:size-4"
+                },
+                'data_attributes': {"data-slot": "tabs-trigger"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "text-foreground", "dark:text-muted-foreground", "inline-flex", "h-[calc(100%-1px)]",
+                    "flex-1", "items-center", "justify-center", "gap-1.5", "rounded-md", "border",
+                    "border-transparent", "px-2", "py-1", "text-sm", "font-medium", "whitespace-nowrap"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {
+                    "data-radix-collection-item", "data-orientation", 
+                    "data-slot", "role", "aria-selected", "data-state", "tabindex", "type", "id", "aria-controls"
+                }   
+            }
+        ),
+        "TabsContent": Component(
+            name="TabsContent",
+            tag="div", 
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "tabs-content"},
+                'variant_patterns': {},
+                'style_classes': {"flex-1", "outline-none"}
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "role", "aria-labelledby", "data-state", "tabindex", "data-orientation", "id"}
+            }
+        ),
+        "DialogClose": Component(
+            name="DialogClose",
+            tag="button", 
+            match_pattern={
+                'signature_classes': {
+                    "ring-offset-background", "focus:ring-ring",
+                    "data-[state=open]:bg-accent", "data-[state=open]:text-muted-foreground",
+                    "transition-opacity", "hover:opacity-100",
+                    "focus:ring-2", "focus:ring-offset-2", "focus:outline-hidden", 
+                    "disabled:pointer-events-none",
+                    "[&_svg]:pointer-events-none", "[&_svg]:shrink-0", "[&_svg:not([class*='size-'])]:size-4"
+                },
+                'data_attributes': {},
+                'variant_patterns': {},
+                'style_classes': {                    
+                    "absolute", "top-4", "right-4", "rounded-xs", "opacity-70"
+                }
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True,
+                'output_blacklist': {"data-slot", "data-state", "type"},
+                'skip_this_element': True
+
             }
         ),
     }

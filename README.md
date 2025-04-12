@@ -48,7 +48,7 @@ print(jsx_output)
 ├── registry.py        # Defines the COMPONENTS registry
 ```
 
-this project uses ![tailwind-merge](https://pypi.org/project/tailwind-merge/)
+this project uses [tailwind-merge](https://pypi.org/project/tailwind-merge/)
 
 ## License
 

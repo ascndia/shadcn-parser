@@ -40,36 +40,44 @@ class JSXConverter:
     
     def _find_matching_component(self, el: Tag) -> Tuple[Optional[Component], dict]:
         el_classes = set(el.get("class", []))
-        
+        el_attrs = el.attrs
+
         for component in self.components.values():
-            # Core fingerprint matching
-            if el.name != component.tag or not component.core_classes.issubset(el_classes):
+            
+            if el.name != component.tag:
                 continue
 
+            
+            data_match = all(
+                el_attrs.get(attr) == str(value)
+                for attr, value in component.match_pattern['data_attributes'].items()
+            )
+            if not data_match:
+                continue
+
+            
+            if not component.match_pattern['signature_classes'].issubset(el_classes):
+                continue
+
+            
             detected_variants = {}
-            # Variant detection with fallback to defaults
-            for var_type in component.variant_map:
-                variant_found = False
-                for var_name, var_classes in component.variant_map[var_type].items():
+            for var_type, variants in component.match_pattern['variant_patterns'].items():
+                for var_name, var_classes in variants.items():
                     if var_classes.issubset(el_classes):
                         detected_variants[var_type] = var_name
-                        variant_found = True
                         break
-                
-                # Apply default variant if none matched
-                if not variant_found and var_type in component.default_variants:
-                    detected_variants[var_type] = component.default_variants[var_type]
 
             return component, detected_variants
-        
+
         return None, {}
     
+
     def _render_component(self, el: Tag, component: Component, variants: dict, indent_level: int) -> str:
         attrs = self._build_component_attrs(el, component, variants)
         attrs_str = " ".join(attrs)
         indent = "  " * indent_level
 
-        if component.self_closing or component.config.get('self_closing') or component.config.get('ignore_children'):
+        if component.config.get('self_closing') or component.config.get('ignore_children'):
             return f"{indent}<{component.name}{' ' + attrs_str if attrs_str else ''} />"
     
         children = [self.process_element(child, indent_level + 1) for child in el.contents]
@@ -84,35 +92,33 @@ class JSXConverter:
             f"{indent}</{component.name}>"
         )
     
+
     def _build_component_attrs(self, el: Tag, component: Component, variants: dict) -> list:
-        el_classes = set(el.get("class", []))
         attrs = []
+        el_classes = set(el.get("class", []))
         
-        # Calculate all managed classes (core + variants + style)
-        managed_classes = component.core_classes.copy()
-        managed_classes.update(component.style_classes)
-        managed_classes.update(component.config.get('ignore_classes', []))
+        managed_classes = (
+            component.match_pattern['signature_classes'] |
+            component.match_pattern['style_classes']
+        )
+        for var_classes in component.match_pattern['variant_patterns'].values():
+            managed_classes.update({c for v in var_classes.values() for c in v})
 
-        # Add variant classes to managed set
-        for var_type, var_name in variants.items():
-            managed_classes.update(component.variant_map[var_type][var_name])
-
-        # Extract and merge custom classes
         custom_classes = el_classes - managed_classes
         if custom_classes:
             merged = self.tw_merger.merge(" ".join(custom_classes))
             attrs.append(f'className="{merged}"')
 
-        # Add variant props
         for var_type, var_name in variants.items():
             attrs.append(f'{var_type}="{var_name}"')
 
-        # Handle other attributes
         for attr, value in el.attrs.items():
-            if attr == "class" or attr in component.ignore_attrs:
+            if attr in component.config['output_blacklist']:
+                continue
+            if attr == "class":
                 continue
             attrs.append(f'{attr}="{value}"')
-        
+
         return attrs
 
     def _render_html_element(self, el: Tag, indent_level: int) -> str:

@@ -622,4 +622,170 @@ COMPONENTS = {
                 'output_blacklist': {"data-slot", "data-state"}
             }
         ),
+                "DialogTrigger": Component(
+            name="DialogTrigger",
+            tag="button", # Radix DialogPrimitive.Trigger (often a button)
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "dialog-trigger"},
+                'variant_patterns': {},
+                'style_classes': set() # Styles are typically added via Button component or className
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-state", "aria-controls", "aria-haspopup", "aria-expanded", "type"}
+            }
+        ),
+        "DialogPortal": Component(
+            name="DialogPortal",
+            tag="div", # Radix DialogPrimitive.Portal renders a div by default
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "dialog-portal"},
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False, # Renders children elsewhere
+                'output_blacklist': {"data-slot"},
+                'skip_this_element': True # Portal itself is not styled or directly rendered in place
+            }
+        ),
+        "DialogClose": Component(
+            name="DialogClose",
+            tag="button", # Radix DialogPrimitive.Close (often a button)
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "dialog-close"},
+                'variant_patterns': {},
+                'style_classes': set() # Styles are typically added via Button component or className
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-state", "type"}
+            }
+        ),
+        "DialogOverlay": Component(
+            name="DialogOverlay",
+            tag="div", # Radix DialogPrimitive.Overlay renders a div
+            match_pattern={
+                'signature_classes': {
+                    # State-based animations
+                    "data-[state=open]:animate-in", "data-[state=closed]:animate-out", 
+                    "data-[state=closed]:fade-out-0", "data-[state=open]:fade-in-0"
+                },
+                'data_attributes': {"data-slot": "dialog-overlay"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # Positioning and appearance
+                    "fixed", "inset-0", "z-50", "bg-black/50"
+                }
+            },
+            config={
+                'self_closing': False, # Can have content, though usually doesn't
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-state"}
+            }
+        ),
+        "DialogContent": Component(
+            name="DialogContent",
+            tag="div", # Radix DialogPrimitive.Content renders a div
+            match_pattern={
+                'signature_classes': {
+                    # State-based animations
+                    "data-[state=open]:animate-in", "data-[state=closed]:animate-out", 
+                    "data-[state=closed]:fade-out-0", "data-[state=open]:fade-in-0", 
+                    "data-[state=closed]:zoom-out-95", "data-[state=open]:zoom-in-95"
+                },
+                'data_attributes': {"data-slot": "dialog-content"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # Appearance, layout, positioning
+                    "bg-background", "fixed", "top-[50%]", "left-[50%]", "z-50", "grid", 
+                    "w-full", "max-w-[calc(100%-2rem)]", "translate-x-[-50%]", "translate-y-[-50%]", 
+                    "gap-4", "rounded-lg", "border", "p-6", "shadow-lg", "duration-200", 
+                    "sm:max-w-lg"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-state", "role", "aria-describedby", "aria-labelledby", "tabindex", "id"}
+            }
+        ),
+        "DialogHeader": Component(
+            name="DialogHeader",
+            tag="div",
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "dialog-header"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # Layout and text alignment
+                    "flex", "flex-col", "gap-2", "text-center", "sm:text-left"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "DialogFooter": Component(
+            name="DialogFooter",
+            tag="div",
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "dialog-footer"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # Layout and justification
+                    "flex", "flex-col-reverse", "gap-2", "sm:flex-row", "sm:justify-end"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "DialogTitle": Component(
+            name="DialogTitle",
+            tag="h2", # Radix DialogPrimitive.Title renders h2 by default
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "dialog-title"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # Typography
+                    "text-lg", "leading-none", "font-semibold"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "id"}
+            }
+        ),
+        "DialogDescription": Component(
+            name="DialogDescription",
+            tag="p", # Radix DialogPrimitive.Description renders p by default
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "dialog-description"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # Typography and color
+                    "text-muted-foreground", "text-sm"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "id"}
+            }
+        ),
     }

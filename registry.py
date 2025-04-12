@@ -10,7 +10,6 @@ COMPONENTS = {
                 'signature_classes': {
                     # Immutable identity classes (never customized)
                     "ring-offset-background",
-                    "focus-visible:outline-none", "focus-visible:ring-2",
                     "disabled:pointer-events-none", "disabled:opacity-50",
                     "[&_svg]:pointer-events-none", "[&_svg]:size-4",
                     "focus-visible:ring-ring",
@@ -95,6 +94,50 @@ COMPONENTS = {
                 'self_closing': False,
                 'ignore_children': False,
                 'output_blacklist': {"data-slot"}
+            }
+        ),
+        "BadgeLegacy": Component(
+            name="Badge",
+            tag="div", # Based on the React component rendering a div
+            match_pattern={
+                'signature_classes': {
+                    # Base classes from cva related to interaction/state
+                    "transition-colors",
+                    "focus:outline-none",
+                    "focus:ring-2",
+                    "focus:ring-ring",
+                    "focus:ring-offset-2",
+                },
+                'data_attributes': {}, # No specific data attributes in the React example
+                'variant_patterns': {
+                    "variant": {
+                        "default": {
+                            "border-transparent", "bg-primary", "text-primary-foreground",
+                            "hover:bg-primary/80"
+                        },
+                        "secondary": {
+                            "border-transparent", "bg-secondary", "text-secondary-foreground",
+                            "hover:bg-secondary/80"
+                        },
+                        "destructive": {
+                            "border-transparent", "bg-destructive", "text-destructive-foreground",
+                            "hover:bg-destructive/80"
+                        },
+                        "outline": {
+                            "text-foreground"
+                        },
+                    }
+                },
+                'style_classes': {
+                    # Base classes from cva related to layout/appearance
+                    "inline-flex", "items-center", "rounded-full", "border",
+                    "px-2.5", "py-0.5", "text-xs", "font-semibold",
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': set() # No attributes to blacklist from the example
             }
         ),
         "Separator": Component(

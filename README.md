@@ -1,4 +1,4 @@
-# shadcn html to shadcn parser
+# shadcn html to jsx  parser
 
 This project provides a Python-based tool for parsing precompiled shadcn HTML into ShadCN components using Beautiful Soup. It simplifies the process of transforming raw HTML into reusable and styled components.
 

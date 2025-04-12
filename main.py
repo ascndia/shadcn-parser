@@ -6,15 +6,6 @@ from converter import JSXConverter
 
 converter = JSXConverter(COMPONENTS)
 
-def main():
-    html_input = """
-    <div>
-        <h1>Welcome</h1>
-        <img src='images/input_image.png' alt='Example Image'>
-    </div>
-    """
-    jsx_output = converter.convert(html_input)
-    print(jsx_output)
-
-if __name__ == "__main__":
-    main()
+html_input="""
+<button class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 custom-class">Login</button>"""
+print(converter.convert(html_input))

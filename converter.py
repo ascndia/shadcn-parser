@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, Tag, Doctype
 from components import Component, Variant, ComponentAdapter
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple, Optional, Set
 
 class JSXConverter:
     SELF_CLOSING_TAGS = {
@@ -22,6 +22,13 @@ class JSXConverter:
                 output.append(processed)
                 
         return "\n".join(output)
+        
+    def get_extra_classes(self, element_classes: Set[str], variant: Optional[Variant]) -> Set[str]:
+        """Returns classes NOT part of the component's official styling"""
+        print(variant)
+        variant_classes = variant.classes if variant else set()
+        component_classes = element_classes.union(variant_classes)
+        return element_classes - component_classes
     
     def process_element(self, el, indent_level=0) -> str:
         if isinstance(el, Doctype):
@@ -96,24 +103,30 @@ class JSXConverter:
         for var_type, var_name in variants.items():
             attrs.append(f'{var_type}="{var_name}"')
         
-        # Calculate extra classes (base + variants)
-        all_component_classes = component.base_classes.copy()
-        for var_obj in component.variants.values():
-            for v in var_obj.values():
-                all_component_classes.update(v.classes)
+        # Get all component-managed classes
+        component_classes = component.base_classes.copy()
+        # Add variant classes
+        for var_type, var_name in variants.items():
+            if var_type in component.variants:
+                variant = component.variants[var_type].get(var_name)
+                if variant:
+                    component_classes.update(variant.classes)
         
-        extra_classes = el_classes - all_component_classes
+        # Calculate extra classes
+        extra_classes = el_classes - component_classes
+        
         if extra_classes:
+            # Preserve original class order
             preserved_classes = [c for c in el["class"] if c in extra_classes]
             attrs.append(f'className="{" ".join(preserved_classes)}"')
         
-        # Other attributes
+        # Handle other attributes
         for attr, value in el.attrs.items():
-                if attr == "class":
-                    continue
-                if attr in component.ignore_attrs:
-                    continue
-                attrs.append(f'{attr}="{value}"')
+            if attr == "class":
+                continue
+            if attr in component.ignore_attrs:
+                continue
+            attrs.append(f'{attr}="{value}"')
         
         return attrs
         

@@ -1,33 +1,57 @@
-# Fake UI Project
+# HTML to ShadCN Component Converter
 
-## Overview
-This project is a Python-based application that converts HTML input into JSX using a custom `JSXConverter`. It is designed to process and transform HTML structures into JSX components for use in React or similar frameworks.
+This project provides a Python-based tool for converting HTML into ShadCN components using Beautiful Soup. It simplifies the process of transforming raw HTML into reusable and styled components.
 
-## Project Structure
-- `components.py`: Contains the definitions for `Component`, `Variant`, and `ComponentAdapter`.
-- `converter.py`: Implements the `JSXConverter` class, which handles the conversion of HTML to JSX.
-- `main.py`: The entry point of the application. It initializes the `JSXConverter` and processes the provided HTML input.
-- `registry.py`: Manages the `COMPONENTS` registry used by the `JSXConverter`.
+## Features
 
-## Prerequisites
-- Python 3.12 or higher
-- Install the required Python packages using `pip install -r requirements.txt` (if a `requirements.txt` file is provided).
+- Converts HTML into ShadCN components.
+- Utilizes a registry of pre-defined components for seamless conversion.
+- Easy-to-use API for integration into other projects.
+
+## Installation
+
+1. Clone the repository.
+2. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Usage
-1. Run the `main.py` script to convert the predefined HTML input into JSX.
-2. Modify the `html_input` variable in `main.py` to process custom HTML content.
 
-## Example
-The `main.py` script includes an example HTML input. When executed, it will output the JSX equivalent of the HTML structure.
+Here’s how you can use the converter:
 
-## Development
-### Adding Components
-To add new components:
-1. Define the component in `components.py`.
-2. Register the component in `registry.py`.
+```python
+from registry import COMPONENTS
+from converter import JSXConverter
 
-### Testing
-Ensure that all components and conversions are tested thoroughly. Add test cases as needed.
+# Initialize the converter with the component registry
+converter = JSXConverter(COMPONENTS)
+
+# Input your HTML
+html_input = "<button class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 hidden md:block">Login</button>"
+
+# Convert the HTML to ShadCN components
+jsx_output = converter.convert(html_input)
+
+print(jsx_output)
+# Output:
+# <Button variant="ghost" className="hidden md:block">Login</Button>
+```
+
+## Example Result
+
+- **Input HTML**: `<div><h1>Hello, World!</h1></div>`
+- **Converted JSX**: ![Example Result](images/example_result.png)
+
+## Folder Structure
+
+```
+.
+├── components.py      # Defines the Component interface
+├── converter.py       # Contains the main conversion and parsing logic
+├── registry.py        # Defines the COMPONENTS registry
+```
 
 ## License
+
 This project is licensed under the MIT License.

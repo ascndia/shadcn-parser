@@ -73,6 +73,16 @@ class JSXConverter:
     
 
     def _render_component(self, el: Tag, component: Component, variants: dict, indent_level: int) -> str:
+        
+        if component.config.get('skip_this_element'):
+            children = []
+            for child in el.contents:
+                # Process children at CURRENT indent level (no nesting increase)
+                processed = self.process_element(child, indent_level)
+                if processed:
+                    children.append(processed)
+            return "\n".join(children)
+        
         attrs = self._build_component_attrs(el, component, variants)
         attrs_str = " ".join(attrs)
         indent = "  " * indent_level

@@ -16,7 +16,8 @@ class Component:
         'self_closing': False,
         'ignore_children': False,
         'output_blacklist': set(),
-        'default_variants': dict()
+        'default_variants': dict(),
+        'skip_this_element': False,
     })
     tw_merger: TailwindMerge = field(init=False, repr=False)
 

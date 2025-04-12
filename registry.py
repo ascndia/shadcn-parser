@@ -402,4 +402,224 @@ COMPONENTS = {
                 'output_blacklist': set()
             }
         ),
+        "Progress": Component(
+            name="Progress",
+            tag="div", # Radix ProgressPrimitive.Root renders a div
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "progress"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "relative", "h-2", "w-full", "overflow-hidden", "rounded-full", "bg-primary/20"
+                } 
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True, 
+                'output_blacklist': {"data-slot", "aria-valuemax", "aria-valuemin", "data-max", "aria-label", "data-state", "role"} 
+            }
+        ),
+                "NavigationMenu": Component(
+            name="NavigationMenu",
+            tag="nav", # Radix NavigationMenuPrimitive.Root
+            match_pattern={
+                'signature_classes': {
+                    "group/navigation-menu", 
+                },
+                'data_attributes': {"data-slot": "navigation-menu"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "relative", "flex", "max-w-max", "flex-1", 
+                    "items-center", "justify-center"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-viewport"}
+            }
+        ),
+        "NavigationMenuList": Component(
+            name="NavigationMenuList",
+            tag="ul", # Radix NavigationMenuPrimitive.List
+            match_pattern={
+                'signature_classes': {
+                    "group", "list-none",
+                },
+                'data_attributes': {"data-slot": "navigation-menu-list"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "flex", "flex-1", "items-center", "justify-center", "gap-1"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "NavigationMenuItem": Component(
+            name="NavigationMenuItem",
+            tag="li", # Radix NavigationMenuPrimitive.Item
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "navigation-menu-item"},
+                'variant_patterns': {},
+                'style_classes': {"relative"}
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "NavigationMenuTrigger": Component(
+            name="NavigationMenuTrigger",
+            tag="button", # Radix NavigationMenuPrimitive.Trigger
+            match_pattern={
+                'signature_classes': {
+                    "group", "disabled:pointer-events-none", "disabled:opacity-50",
+                    "data-[state=open]:hover:bg-accent", "data-[state=open]:text-accent-foreground",
+                    "data-[state=open]:focus:bg-accent", "data-[state=open]:bg-accent/50",
+                },
+                'data_attributes': {"data-slot": "navigation-menu-trigger"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "focus-visible:ring-ring/50", "focus-visible:ring-[3px]", "focus-visible:outline-1",
+                    "inline-flex", "h-9", "w-max", "items-center", "justify-center",
+                    "rounded-md", "bg-background", "px-4", "py-2", "text-sm", "font-medium",
+                    "hover:bg-accent", "hover:text-accent-foreground", "focus:bg-accent",
+                    "focus:text-accent-foreground", "outline-none", "transition-[color,box-shadow]"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-state", "aria-controls", "aria-expanded", "data-radix-collection-item", "id"}
+            }
+        ),
+        "NavigationMenuContent": Component(
+            name="NavigationMenuContent",
+            tag="div", # Radix NavigationMenuPrimitive.Content
+            match_pattern={
+                'signature_classes': {
+                    # Motion animations
+                    "data-[motion^=from-]:animate-in", "data-[motion^=to-]:animate-out",
+                    "data-[motion^=from-]:fade-in", "data-[motion^=to-]:fade-out",
+                    "data-[motion=from-end]:slide-in-from-right-52",
+                    "data-[motion=from-start]:slide-in-from-left-52",
+                    "data-[motion=to-end]:slide-out-to-right-52",
+                    "data-[motion=to-start]:slide-out-to-left-52",
+                    # Viewport=false specific styles/animations (complex selectors)
+                    "group-data-[viewport=false]/navigation-menu:bg-popover",
+                    "group-data-[viewport=false]/navigation-menu:text-popover-foreground",
+                    "group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in",
+                    "group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out",
+                    "group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95",
+                    "group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95",
+                    "group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0",
+                    "group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0",
+                    "group-data-[viewport=false]/navigation-menu:top-full",
+                    "group-data-[viewport=false]/navigation-menu:mt-1.5",
+                    "group-data-[viewport=false]/navigation-menu:overflow-hidden",
+                    "group-data-[viewport=false]/navigation-menu:rounded-md",
+                    "group-data-[viewport=false]/navigation-menu:border",
+                    "group-data-[viewport=false]/navigation-menu:shadow",
+                    "group-data-[viewport=false]/navigation-menu:duration-200",
+                    # Descendant link focus styles (complex selectors, assuming **: means descendant)
+                    "**:data-[slot=navigation-menu-link]:focus:ring-0", 
+                    "**:data-[slot=navigation-menu-link]:focus:outline-none"
+                },
+                'data_attributes': {"data-slot": "navigation-menu-content"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # General layout and positioning (more likely to be customized)
+                    "top-0", "left-0", "w-full", "p-2", "pr-2.5",
+                    "md:absolute", "md:w-auto"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {
+                    "data-slot", "data-state", "data-motion",
+                    "aria-labelledby", "data-orientation", "id", 
+                    "dir"
+                }
+            }
+        ),
+        "NavigationMenuViewport": Component(
+            name="NavigationMenuViewport",
+            tag="div", # Radix NavigationMenuPrimitive.Viewport
+            match_pattern={
+                'signature_classes': {
+                    # State-based animations
+                    "data-[state=open]:animate-in", "data-[state=closed]:animate-out",
+                    "data-[state=closed]:zoom-out-95", "data-[state=open]:zoom-in-90"
+                },
+                'data_attributes': {"data-slot": "navigation-menu-viewport"},
+                'variant_patterns': {},
+                'style_classes': {
+                    # Layout, positioning, appearance (more likely to be customized)
+                    "origin-top-center", "bg-popover", "text-popover-foreground",
+                    "relative", "mt-1.5", "overflow-hidden", "rounded-md", "border", "shadow",
+                    "h-[var(--radix-navigation-menu-viewport-height)]", # Added
+                    "w-full", # Added
+                    "md:w-[var(--radix-navigation-menu-viewport-width)]" # Added
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-state", "data-orientation"},
+                'skip_this_element': True
+            }
+        ),
+        "NavigationMenuLink": Component(
+            name="NavigationMenuLink",
+            tag="a", # Radix NavigationMenuPrimitive.Link
+            match_pattern={
+                'signature_classes': {
+                    "data-[active=true]:focus:bg-accent", "data-[active=true]:hover:bg-accent",
+                    "data-[active=true]:bg-accent/50", "data-[active=true]:text-accent-foreground",
+                    "focus-visible:outline-1", 
+                    "[&_svg:not([class*='text-'])]:text-muted-foreground",
+                    "[&_svg:not([class*='size-'])]:size-4"
+                },
+                'data_attributes': {"data-slot": "navigation-menu-link"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "focus-visible:ring-ring/50", "focus-visible:ring-[3px]",
+                    "hover:bg-accent", "hover:text-accent-foreground", "focus:bg-accent",
+                    "focus:text-accent-foreground", "flex", "flex-col", "gap-1", 
+                    "rounded-sm", "p-2", "text-sm", "transition-all", "outline-none"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-active", "data-radix-collection-item"}
+            }
+        ),
+        "NavigationMenuIndicator": Component(
+            name="NavigationMenuIndicator",
+            tag="div", # Radix NavigationMenuPrimitive.Indicator
+            match_pattern={
+                'signature_classes': {
+                    "data-[state=visible]:animate-in", "data-[state=hidden]:animate-out",
+                    "data-[state=hidden]:fade-out", "data-[state=visible]:fade-in"
+                },
+                'data_attributes': {"data-slot": "navigation-menu-indicator"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "top-full", "z-[1]", "flex", "h-1.5", "items-end", "justify-center",
+                    "overflow-hidden"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "data-state"}
+            }
+        ),
     }

@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup, Tag, Doctype
-from components import Component, Variant, ComponentAdapter
+from components import Component
 from typing import Dict, Tuple, Optional, Set
+from tailwind_merge import TailwindMerge
 
 class JSXConverter:
     SELF_CLOSING_TAGS = {
@@ -11,7 +12,8 @@ class JSXConverter:
 
     def __init__(self, components: Dict[str, Component]):
         self.components = components
-        
+        self.tw_merger = TailwindMerge()
+
     def convert(self, html: str) -> str:
         soup = BeautifulSoup(html, "html.parser")
         output = []
@@ -22,14 +24,7 @@ class JSXConverter:
                 output.append(processed)
                 
         return "\n".join(output)
-        
-    def get_extra_classes(self, element_classes: Set[str], variant: Optional[Variant]) -> Set[str]:
-        """Returns classes NOT part of the component's official styling"""
-        print(variant)
-        variant_classes = variant.classes if variant else set()
-        component_classes = element_classes.union(variant_classes)
-        return element_classes - component_classes
-    
+
     def process_element(self, el, indent_level=0) -> str:
         if isinstance(el, Doctype):
             return "<!DOCTYPE html>"
@@ -37,122 +32,112 @@ class JSXConverter:
         if not isinstance(el, Tag):
             return self._format_text(str(el).strip(), indent_level)
             
-        # Component matching logic
-        component, variant = self._find_matching_component(el)
-        
+        component, variants = self._find_matching_component(el)
         if component:
-            return self._render_component(el, component, variant, indent_level)
+            return self._render_component(el, component, variants, indent_level)
             
         return self._render_html_element(el, indent_level)
     
-    def _find_matching_component(self, el: Tag):
-        element_classes = set(el.get("class", []))
+    def _find_matching_component(self, el: Tag) -> Tuple[Optional[Component], dict]:
+        el_classes = set(el.get("class", []))
         
         for component in self.components.values():
-            if el.name != component.tag:
-                continue
-                
-            if not component.base_classes.issubset(element_classes):
+            # Core fingerprint matching
+            if el.name != component.tag or not component.core_classes.issubset(el_classes):
                 continue
 
             detected_variants = {}
-            
-            # Check all variant types (variant, size)
-            for variant_type, variants in component.variants.items():
-                for var_name, variant_obj in variants.items():
-                    if variant_obj.classes.issubset(element_classes):
-                        detected_variants[variant_type] = var_name
-                        break  # Only match one variant per type
+            # Variant detection with fallback to defaults
+            for var_type in component.variant_map:
+                variant_found = False
+                for var_name, var_classes in component.variant_map[var_type].items():
+                    if var_classes.issubset(el_classes):
+                        detected_variants[var_type] = var_name
+                        variant_found = True
+                        break
+                
+                # Apply default variant if none matched
+                if not variant_found and var_type in component.default_variants:
+                    detected_variants[var_type] = component.default_variants[var_type]
 
             return component, detected_variants
-            
-        return None, None
-
-    def _render_component(self, el: Tag, component: Component, variant: Variant, indent_level: int) -> str:
-        # Build attributes FIRST
-        attrs = self._build_component_attrs(el, component, variant)
+        
+        return None, {}
+    
+    def _render_component(self, el: Tag, component: Component, variants: dict, indent_level: int) -> str:
+        attrs = self._build_component_attrs(el, component, variants)
         attrs_str = " ".join(attrs)
-        if attrs_str:
-            attrs_str = " " + attrs_str  # Add leading space
-
         indent = "  " * indent_level
 
-        # Handle self-closing components early
-        if component.self_closing:
-            return f"{indent}<{component.name}{attrs_str} />"
-
-        # Process children only for non-self-closing components
+        if component.self_closing or component.config.get('self_closing') or component.config.get('ignore_children'):
+            return f"{indent}<{component.name}{' ' + attrs_str if attrs_str else ''} />"
+    
         children = [self.process_element(child, indent_level + 1) for child in el.contents]
         children_str = "\n".join(filter(None, children))
 
-        # Format output based on children content
         if not children_str.strip():
-            return f"{indent}<{component.name}{attrs_str} />"
+            return f"{indent}<{component.name}{' ' + attrs_str if attrs_str else ''} />"
             
         return (
-            f"{indent}<{component.name}{attrs_str}>\n"
+            f"{indent}<{component.name}{' ' + attrs_str if attrs_str else ''}>\n"
             f"{children_str}\n"
             f"{indent}</{component.name}>"
         )
     
     def _build_component_attrs(self, el: Tag, component: Component, variants: dict) -> list:
-        attrs = []
         el_classes = set(el.get("class", []))
+        attrs = []
         
+        # Calculate all managed classes (core + variants + style)
+        managed_classes = component.core_classes.copy()
+        managed_classes.update(component.style_classes)
+        managed_classes.update(component.config.get('ignore_classes', []))
+
+        # Add variant classes to managed set
+        for var_type, var_name in variants.items():
+            managed_classes.update(component.variant_map[var_type][var_name])
+
+        # Extract and merge custom classes
+        custom_classes = el_classes - managed_classes
+        if custom_classes:
+            merged = self.tw_merger.merge(" ".join(custom_classes))
+            attrs.append(f'className="{merged}"')
+
         # Add variant props
         for var_type, var_name in variants.items():
             attrs.append(f'{var_type}="{var_name}"')
-        
-        # Get all component-managed classes
-        component_classes = component.base_classes.copy()
-        # Add variant classes
-        for var_type, var_name in variants.items():
-            if var_type in component.variants:
-                variant = component.variants[var_type].get(var_name)
-                if variant:
-                    component_classes.update(variant.classes)
-        
-        # Calculate extra classes
-        extra_classes = el_classes - component_classes
-        
-        if extra_classes:
-            # Preserve original class order
-            preserved_classes = [c for c in el["class"] if c in extra_classes]
-            attrs.append(f'className="{" ".join(preserved_classes)}"')
-        
+
         # Handle other attributes
         for attr, value in el.attrs.items():
-            if attr == "class":
-                continue
-            if attr in component.ignore_attrs:
+            if attr == "class" or attr in component.ignore_attrs:
                 continue
             attrs.append(f'{attr}="{value}"')
         
         return attrs
-        
+
     def _render_html_element(self, el: Tag, indent_level: int) -> str:
-        # Similar structure to component rendering but simpler
         indent = "  " * indent_level
-        attrs = [f'className="{" ".join(el["class"])}"'] if "class" in el.attrs else []
+        attrs = []
         
+        if "class" in el.attrs:
+            merged = self.tw_merger.merge(" ".join(el["class"]))
+            attrs.append(f'className="{merged}"')
+
         for attr, value in el.attrs.items():
             if attr != "class":
                 attrs.append(f'{attr}="{value}"')
-                
-        children = [self.process_element(child, indent_level + 1) 
-                   for child in el.contents]
+
+        children = [self.process_element(child, indent_level + 1) for child in el.contents]
         children_str = "\n".join(filter(None, children))
-        
+
         if not children_str and el.name in self.SELF_CLOSING_TAGS:
-            return f"{indent}<{el.name} {' '.join(attrs)} />"
+            return f"{indent}<{el.name}{' ' + ' '.join(attrs) if attrs else ''} />"
             
         return (
-            f"{indent}<{el.name} {' '.join(attrs)}>\n"
+            f"{indent}<{el.name}{' ' + ' '.join(attrs) if attrs else ''}>\n"
             f"{children_str}\n"
             f"{indent}</{el.name}>"
         )
-    
+
     def _format_text(self, text: str, indent_level: int) -> str:
-        if not text:
-            return ""
-        return "  " * indent_level + text
+        return "  " * indent_level + text if text.strip() else ""

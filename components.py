@@ -1,104 +1,82 @@
-from dataclasses import dataclass
-from typing import Dict, Set, Optional
-
-@dataclass
-class Variant:
-    name: str
-    classes: Set[str]
-    props: Dict[str, str] = None
+from dataclasses import dataclass, field
+from typing import Dict, Set, Optional, List
+from tailwind_merge import TailwindMerge
 
 @dataclass
 class Component:
     name: str
     tag: str
-    base_classes: Set[str]
-    variants: Dict[str, Variant] = None
-    default_variant: Optional[str] = None
-    ignore_attrs: Set[str] = None  
-    self_closing: bool = False  
+    core_classes: Set[str]  # Immutable fingerprint classes
+    variant_map: Dict[str, Dict[str, Set[str]]]  # {variant_type: {variant_name: classes}}
+    style_classes: Set[str]  # Default styles that can be customized
+    default_variants: Dict[str, str] = field(default_factory=dict)  # {variant_type: default_name}
+    ignore_attrs: Set[str] = field(default_factory=set)
+    self_closing: bool = False
+    config: Dict = field(default_factory=lambda: {
+        'self_closing': False,
+        'ignore_children': False,
+        'preserve_aspect': True,
+        'ignore_classes': set(),
+    })
+    tw_merger: TailwindMerge = field(init=False, repr=False)
 
+    def __post_init__(self):
+        self.tw_merger = TailwindMerge()
 
-    def match(self, tag_name: str, element_classes: Set[str]) -> bool:
+    def match_core(self, tag_name: str, element_classes: Set[str]) -> bool:
+        """Check if element matches component's core identity"""
         return (
-            tag_name == self.tag and 
-            self.base_classes.issubset(element_classes)
-        )
+            tag_name == self.tag and
+            self.core_classes.issubset(element_classes))
     
-    def extract_variant(self, element_classes: Set[str]) -> Optional[Variant]:
-        if not self.variants:
-            return None
-            
-        for variant in self.variants.values():
-            if variant.classes.issubset(element_classes):
-                return variant
-        return None
+    def detect_variants(self, element_classes: Set[str]) -> Dict[str, str]:
+        """Identify active variants based on class matches"""
+        detected = {}
+        for var_type, variants in self.variant_map.items():
+            for var_name, var_classes in variants.items():
+                if var_classes.issubset(element_classes):
+                    detected[var_type] = var_name
+                    break  # First match wins
+            else:  # No variant matched, use default
+                if var_type in self.default_variants:
+                    detected[var_type] = self.default_variants[var_type]
+        return detected
     
-    def get_extra_classes(self, element_classes: Set[str], variant: Optional[Variant]) -> Set[str]:
-        base_and_variant = self.base_classes.copy()
-        if variant:
-            base_and_variant.update(variant.classes)
-        return element_classes - base_and_variant
+    def get_custom_classes(self, element_classes: Set[str]) -> str:
+        """Get merged custom classes after removing component-managed ones"""
+        managed_classes = self.core_classes.copy()
+        managed_classes.update(self.style_classes)
+        
+        # Add variant classes to managed set
+        for var_type, variants in self.variant_map.items():
+            for var_classes in variants.values():
+                managed_classes.update(var_classes)
+        
+        custom_classes = element_classes - managed_classes
+        return self.tw_merger.merge(" ".join(custom_classes))
 
 class ComponentAdapter:
     @classmethod
-    def from_cva(
-        cls, 
-        name: str, 
-        tag: str, 
-        cva_config: dict, 
-        ignore_attrs: Set[str] = None,
-        self_closing: bool = False):
-
-        base_classes_str = cva_config.get("base_classes", "")
-        base_classes = set(base_classes_str.split()) if isinstance(base_classes_str, str) else set()
-        
-        # Process variants
-        variants = {}
-        for var_type, var_options in cva_config.get("variants", {}).items():
-            variants[var_type] = {}
-            for var_name, var_classes in var_options.items():
-                # Ensure var_classes is a string before splitting
-                if isinstance(var_classes, str):
-                    variants[var_type][var_name] = Variant(
-                        name=var_name,
-                        classes=set(var_classes.split())
-                    )
-                else:
-                    # Handle the case where var_classes might not be a string
-                    variants[var_type][var_name] = Variant(
-                        name=var_name,
-                        classes=set(str(var_classes).split()) if var_classes else set()
-                    )
-        
-        # Get the default variant if specified
-        default_variant = cva_config.get("default_variant")
-        
-        # Return Component instance instead of trying to construct a ComponentAdapter
-        return Component(
-            name=name,
-            tag=tag,
-            base_classes=base_classes,
-            variants=variants,
-            default_variant=default_variant,
-            ignore_attrs=ignore_attrs or set(),
-            self_closing=self_closing
-        )
-
-    @classmethod    
-    def from_base(
-        cls, 
-        name: str, 
-        tag: str, 
-        base_classes: str, 
+    def from_fingerprint(
+        cls,
+        name: str,
+        tag: str,
+        core_classes: Set[str],
+        variant_map: Dict[str, Dict[str, Set[str]]],
+        style_classes: Set[str],
+        default_variants: Dict[str, str] = None,
         ignore_attrs: Set[str] = None,
         self_closing: bool = False
     ) -> Component:
         return Component(
             name=name,
             tag=tag,
-            base_classes=set(base_classes.split()),
-            variants={},
+            core_classes=core_classes,
+            variant_map=variant_map,
+            style_classes=style_classes,
+            default_variants=default_variants or {},
             ignore_attrs=ignore_attrs or set(),
             self_closing=self_closing
         )
+
         

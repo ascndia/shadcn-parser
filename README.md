@@ -2,8 +2,6 @@
 
 This project provides a Python-based tool for converting HTML into ShadCN components using Beautiful Soup. It simplifies the process of transforming raw HTML into reusable and styled components.
 
-> Some ShadCN components that rely on twMerge may not render or convert properly at this time.  We're actively working on a fix to support twMerge-based components more reliably.
-
 ## Installation
 
 1. Clone the repository.
@@ -49,6 +47,8 @@ print(jsx_output)
 ├── converter.py       # Contains the main conversion and parsing logic
 ├── registry.py        # Defines the COMPONENTS registry
 ```
+
+this project uses ![tailwind-merge](https://pypi.org/project/tailwind-merge/)
 
 ## License
 

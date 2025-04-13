@@ -46,6 +46,45 @@ COMPONENTS = {
                 'output_blacklist': set()
             }
         ),
+        "Button": Component(
+            name="Button",
+            tag="button",
+            match_pattern={
+                'signature_classes': {
+                    # Core interaction/state classes from cva base
+                    "focus-visible:ring-1", "focus-visible:ring-ring",
+                    "disabled:pointer-events-none", "disabled:opacity-50",
+                    "[&_svg]:pointer-events-none", "[&_svg]:size-4", "[&_svg]:shrink-0",
+                },
+                'data_attributes': {},
+                'variant_patterns': {
+                    "variant": {
+                        "default": {"bg-primary", "text-primary-foreground", "shadow", "hover:bg-primary/90"},
+                        "destructive": {"bg-destructive", "text-destructive-foreground", "shadow-sm", "hover:bg-destructive/90"},
+                        "outline": {"border", "border-input", "bg-background", "shadow-sm", "hover:bg-accent", "hover:text-accent-foreground"},
+                        "secondary": {"bg-secondary", "text-secondary-foreground", "shadow-sm", "hover:bg-secondary/80"},
+                        "ghost": {"hover:bg-accent", "hover:text-accent-foreground"},
+                        "link": {"text-primary", "underline-offset-4", "hover:underline"}
+                    },
+                    "size": {
+                        "default": {"h-10", "px-4", "py-2"},
+                        "sm": {"h-9", "px-3"},
+                        "lg": {"h-11", "px-8"},
+                        "icon": {"h-10", "w-10"}
+                    }
+                },
+                'style_classes': {
+                    "inline-flex", "items-center", "justify-center", "gap-2",
+                    "whitespace-nowrap", "rounded-md", "text-sm", "font-medium",
+                    "transition-colors", "focus-visible:outline-none",
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': set()
+            }
+        ),
         "Badge": Component(
             name="Badge",
             tag="span",
@@ -760,6 +799,31 @@ COMPONENTS = {
                 'output_blacklist': {"data-slot", "data-state", "role", "aria-describedby", "aria-labelledby", "tabindex", "id"}
             }
         ),
+        "DialogContentLegacy": Component(
+            name="DialogContent",
+            tag="div", 
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"role": "dialog"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "data-[state=open]:zoom-in-95",
+                    "data-[state=open]:slide-in-from-left-1/2", "data-[state=closed]:slide-out-to-left-1/2", 
+                    "data-[state=closed]:slide-out-to-top-[48%]", "data-[state=open]:slide-in-from-top-[48%]", 
+                    "data-[state=closed]:fade-out-0", "data-[state=open]:animate-in",
+                    "data-[state=open]:fade-in-0","data-[state=closed]:zoom-out-95","data-[state=closed]:animate-out",
+                    "bg-background", "fixed", "top-[50%]", "left-[50%]", "z-50", "grid", 
+                    "w-full", "max-w-lg", "translate-x-[-50%]", "translate-y-[-50%]", 
+                    "gap-4", "rounded-lg", "border", "p-6", "shadow-lg", "duration-200", 
+                    "sm:max-w-lg", "outline-hidden", "sm:rounded-lg"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"style","data-slot", "data-state", "role", "aria-describedby", "aria-labelledby", "tabindex", "id"}
+            }
+        ),
         "DialogHeader": Component(
             name="DialogHeader",
             tag="div",
@@ -933,6 +997,434 @@ COMPONENTS = {
                 'output_blacklist': {"data-slot", "data-state", "type"},
                 'skip_this_element': True
 
+            }
+        ),
+         "ButtonNew": Component( # Renamed to avoid conflict, adjust name as needed
+            name="Button", # Or potentially a different name like "StyledButton"
+            tag="button",
+            match_pattern={
+                'signature_classes': {
+                    # Interaction, state, and transition classes
+                    "transition-all", # Different transition
+                    "disabled:pointer-events-none", "disabled:opacity-50",
+                    "focus-visible:border-ring", # Different focus style
+                    "focus-visible:ring-ring/50", # Different focus style
+                    "focus-visible:ring-[3px]", # Different focus style
+                    "aria-invalid:ring-destructive/20", # Added invalid state
+                    "dark:aria-invalid:ring-destructive/40", # Added invalid state
+                    "aria-invalid:border-destructive", # Added invalid state
+                    "[&_svg]:pointer-events-none",
+                    "[&_svg:not([class*='size-'])]:size-4", # Specific SVG sizing
+                    "[&_svg]:shrink-0",
+                },
+                'data_attributes': {"data-slot": "button"}, # Added data-slot
+                'variant_patterns': {
+                    "variant": {
+                        "default": {
+                            "bg-primary", "text-primary-foreground",
+                            "hover:bg-primary/90"
+                            },
+                        # Add other variants (destructive, outline, etc.) if they follow a similar pattern
+                    },
+                    "size": {
+                        "default": { # Based on the example provided
+                            "h-10", "px-6", "has-[>svg]:px-4" # Specific padding logic
+                            },
+                        # Add other sizes (sm, lg, icon) if needed
+                    }
+                },
+                'style_classes': {
+                    # Layout, appearance, typography
+                    "inline-flex", "items-center", "justify-center", "gap-2",
+                    "whitespace-nowrap", "text-sm", "font-medium",
+                    "shrink-0", # Added shrink-0
+                    "outline-none", # Added outline-none
+                    "shadow-xs", # Added shadow-xs
+                    "rounded-md",
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"} # Blacklist data-slot if needed
+            }
+        ),
+        "Avatar": Component(
+            name="Avatar",
+            tag="span", # Radix AvatarPrimitive.Root renders a span
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "avatar"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "relative", "flex", "size-8", "shrink-0", "overflow-hidden", "rounded-full"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "AvatarImage": Component(
+            name="AvatarImage",
+            tag="img", # Radix AvatarPrimitive.Image renders an img
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "avatar-image"},
+                'variant_patterns': {},
+                'style_classes': {"aspect-square", "size-full"}
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "AvatarFallback": Component(
+            name="AvatarFallback",
+            tag="span", # Radix AvatarPrimitive.Fallback renders a span
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"data-slot": "avatar-fallback"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "bg-muted", "flex", "size-full", "items-center", "justify-center", "rounded-full"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "AvatarLegacy": Component(
+            name="Avatar",
+            tag="span", # Radix AvatarPrimitive.Root renders a span
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {},
+                'variant_patterns': {},
+                'style_classes': {
+                    "relative", "flex", "size-8", "shrink-0", "overflow-hidden", "rounded-full"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {}
+            }
+        ),
+        "AvatarImageLegacy": Component(
+            name="AvatarImage",
+            tag="img", # Radix AvatarPrimitive.Image renders an img
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {},
+                'variant_patterns': {},
+                'style_classes': {"aspect-square", "size-full"}
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True,
+                'output_blacklist': {}
+            }
+        ),
+        "AvatarFallbackLegacy": Component(
+            name="AvatarFallback",
+            tag="span", # Radix AvatarPrimitive.Fallback renders a span
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {},
+                'variant_patterns': {},
+                'style_classes': {
+                    "bg-muted", "flex", "size-full", "items-center", "justify-center", "rounded-full"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {}
+            }
+        ),
+        "Command": Component(
+            name="Command",
+            tag="div", # Based on CommandPrimitive
+            match_pattern={
+                'signature_classes': {"flex", "h-full", "w-full", "flex-col", "overflow-hidden", "rounded-md"},
+                'data_attributes': {"data-slot": "command"},
+                'variant_patterns': {},
+                'style_classes': {"bg-popover", "text-popover-foreground"}
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "cmdk-root", "tabindex", "aria-hidden"}
+            }
+        ),
+        "CommandLegacy": Component(
+            name="Command",
+            tag="div", # Based on CommandPrimitive
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"cmdk-root": ""},
+                'variant_patterns': {},
+                'style_classes': {
+                    "bg-popover", "text-popover-foreground"
+                    "flex", "h-full", "w-full", "flex-col", "overflow-hidden", "rounded-md"
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "cmdk-root", "tabindex", "aria-hidden"},
+            }
+        ),
+        # CommandDialog is skipped as it primarily composes Dialog and Command
+        "CommandInput": Component( # Wrapper div for CommandInput
+            name="CommandInput", # Custom name for the wrapper
+            tag="div",
+            match_pattern={
+                'signature_classes': {"flex", "items-center", "border-b", "px-3"},
+                'data_attributes': {"data-slot": "command-input-wrapper"},
+                'variant_patterns': {},
+                'style_classes': {"h-9", "gap-2"} # h-9 might vary based on CommandDialog usage
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True, # Contains Icon and Input
+                'output_blacklist': {"data-slot", "cmdk-input-wrapper"}
+            }
+        ),
+        "CommandInputLegacy": Component( # Wrapper div for CommandInput
+            name="CommandInput", # Custom name for the wrapper
+            tag="div",
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"cmdk-input-wrapper": ""},
+                'variant_patterns': {},
+                'style_classes': {
+                    "h-9", "gap-2"
+                    "flex", "items-center", "border-b", "px-3"
+                } 
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True, # Contains Icon and Input
+                'output_blacklist': {"data-slot", "cmdk-input-wrapper"},
+                
+            }
+        ),
+        # "CommandInput": Component(
+        #     name="CommandInput",
+        #     tag="input", # Based on CommandPrimitive.Input
+        #     match_pattern={
+        #         'signature_classes': {
+        #             "flex", "w-full", "rounded-md", "bg-transparent", "text-sm", "outline-hidden",
+        #             "disabled:cursor-not-allowed", "disabled:opacity-50"
+        #         },
+        #         'data_attributes': {"data-slot": "command-input"},
+        #         'variant_patterns': {},
+        #         'style_classes': {"placeholder:text-muted-foreground", "h-10", "py-3"} # h-10 might vary
+        #     },
+        #     config={
+        #         'self_closing': True,
+        #         'ignore_children': True,
+        #         'output_blacklist': {
+        #             "data-slot", "cmdk-input", "autocomplete", "autocorrect", "spellcheck",
+        #             "aria-autocomplete", "role", "aria-expanded", "aria-controls",
+        #             "aria-labelledby", "id", "type", "value", "placeholder" # placeholder might be needed
+        #         }
+        #     }
+        # ),
+        # "CommandInputLegacy": Component(
+        #     name="CommandInput",
+        #     tag="input", # Based on CommandPrimitive.Input
+        #     match_pattern={
+        #         'signature_classes': {                    
+        #             "disabled:cursor-not-allowed", "disabled:opacity-50"
+        #         },
+        #         'data_attributes': {"cmdk-input": ""},
+        #         'variant_patterns': {},
+        #         'style_classes': {
+        #             "placeholder:text-muted-foreground", "h-10", "py-3"
+        #             "flex", "w-full", "rounded-md", "bg-transparent", "text-sm", "outline-hidden"
+        #         }
+        #     },
+        #     config={
+        #         'self_closing': True,
+        #         'ignore_children': True,
+        #         'output_blacklist': {
+        #             "data-slot", "cmdk-input", "autocomplete", "autocorrect", "spellcheck",
+        #             "aria-autocomplete", "role", "aria-expanded", "aria-controls",
+        #             "aria-labelledby", "id", "type", "value", "placeholder" # placeholder might be needed
+        #         }
+        #     }
+        # ),
+        "CommandLabelIgnore": Component(
+            name="CommandLabelIgnore",
+            tag="label",
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"cmdk-label":""},
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True,
+                'output_blacklist': {},
+                'skip_this_element': True
+            }
+        ),
+        "CommandList": Component(
+            name="CommandList",
+            tag="div", # Based on CommandPrimitive.List
+            match_pattern={
+                'signature_classes': {"overflow-x-hidden", "overflow-y-auto"},
+                'data_attributes': {"cmdk-list": ""},
+                'variant_patterns': {},
+                'style_classes': {"max-h-[300px]", "scroll-py-1"}
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "cmdk-list", "role", "aria-label", "id", "style"} # style added
+            }
+        ),
+        "CommandEmpty": Component(
+            name="CommandEmpty",
+            tag="div", # Based on CommandPrimitive.Empty
+            match_pattern={
+                'signature_classes': {"py-6", "text-center", "text-sm"},
+                'data_attributes': {"data-slot": "command-empty"},
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': False, # Can contain text
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "cmdk-empty", "role"}
+            }
+        ),
+        "CommandGroup": Component(
+            name="CommandGroup",
+            tag="div", # Based on CommandPrimitive.Group
+            match_pattern={
+                'signature_classes': {
+                    "text-foreground", "overflow-hidden", "p-1",
+                    "[&_[cmdk-group-heading]]:text-muted-foreground",
+                    "[&_[cmdk-group-heading]]:px-2", "[&_[cmdk-group-heading]]:py-1.5",
+                    "[&_[cmdk-group-heading]]:text-xs", "[&_[cmdk-group-heading]]:font-medium"
+                },
+                'data_attributes': {"data-slot": "command-group"},
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "cmdk-group", "role", "data-value"}
+            }
+        ),
+        "CommandGroupLegacy": Component(
+            name="CommandGroup",
+            tag="div", # Based on CommandPrimitive.Group
+            match_pattern={
+                'signature_classes': set(),
+                'data_attributes': {"cmdk-group-items": ""},
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"data-slot", "cmdk-group-items", "role", "data-value"}
+            }
+        ),
+        "CommandSeparator": Component(
+            name="CommandSeparator",
+            tag="div", # Based on CommandPrimitive.Separator
+            match_pattern={
+                'signature_classes': {"bg-border", "-mx-1", "h-px"},
+                'data_attributes': {"data-slot": "command-separator"},
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': True,
+                'ignore_children': True,
+                'output_blacklist': {"data-slot", "cmdk-separator", "role"}
+            }
+        ),
+        "CommandItem": Component(
+            name="CommandItem",
+            tag="div", # Based on CommandPrimitive.Item
+            match_pattern={
+                'signature_classes': {                    
+                    "data-[disabled=true]:pointer-events-none", "data-[disabled=true]:opacity-50",
+                    "[&_svg]:pointer-events-none", "[&_svg]:shrink-0",
+                    "[&_svg:not([class*='size-'])]:size-4",
+                    "[&_svg:not([class*='text-'])]:text-muted-foreground",
+                    "data-[selected=true]:bg-accent", "data-[selected=true]:text-accent-foreground"
+                },
+                'data_attributes': {"data-slot": "command-item"},
+                'variant_patterns': {},
+                'style_classes': {
+                    "relative", "flex", "cursor-default", "items-center", "gap-2", "rounded-sm",
+                    "px-2", "py-1.5", "text-sm", "outline-hidden", "select-none",
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {
+                    "data-slot", "cmdk-item", "role", "aria-disabled", "aria-selected",
+                    "data-disabled", "data-selected", "data-value", "id"
+                }
+            }
+        ),
+        "CommandItemLegacy": Component(
+            name="CommandItem",
+            tag="div", # Based on CommandPrimitive.Item
+            match_pattern={
+                'signature_classes': {                    
+                    "data-[disabled=true]:pointer-events-none", "data-[disabled=true]:opacity-50",
+                    "[&_svg]:pointer-events-none", "[&_svg]:shrink-0",
+                    # "[&_svg:not([class*='size-'])]:size-4",
+                    "[&_svg]:size-4",
+                    # "[&_svg:not([class*='text-'])]:text-muted-foreground",
+                    "data-[selected=true]:bg-accent", "data-[selected=true]:text-accent-foreground"
+                },
+                'data_attributes': {},
+                'variant_patterns': {},
+                'style_classes': {
+                    "relative", "flex", "cursor-default", "items-center", "gap-2", "rounded-sm",
+                    "px-2", "py-1.5", "text-sm", "outline-none", "select-none",
+                }
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {
+                    "data-slot", "cmdk-item", "role", "aria-disabled", "aria-selected",
+                    "data-disabled", "data-selected", "data-value", "id"
+                }
+            }
+        ),
+        "CommandShortcut": Component(
+            name="CommandShortcut",
+            tag="span",
+            match_pattern={
+                'signature_classes': {"ml-auto", "text-xs", "tracking-widest"},
+                'data_attributes': {"data-slot": "command-shortcut"},
+                'variant_patterns': {},
+                'style_classes': {"text-muted-foreground"}
+            },
+            config={
+                'self_closing': False, # Contains text
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
             }
         ),
     }

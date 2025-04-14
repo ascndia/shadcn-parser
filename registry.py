@@ -1102,11 +1102,11 @@ COMPONENTS = {
             name="Avatar",
             tag="span", # Radix AvatarPrimitive.Root renders a span
             match_pattern={
-                'signature_classes': set(),
+                'signature_classes': {"overflow-hidden", "rounded-full"},
                 'data_attributes': {},
                 'variant_patterns': {},
                 'style_classes': {
-                    "relative", "flex", "size-8", "shrink-0", "overflow-hidden", "rounded-full"
+                    "relative", "flex", "size-8", "shrink-0", 
                 }
             },
             config={
@@ -1119,10 +1119,10 @@ COMPONENTS = {
             name="AvatarImage",
             tag="img", # Radix AvatarPrimitive.Image renders an img
             match_pattern={
-                'signature_classes': set(),
+                'signature_classes': {"aspect-square", "size-full", "h-full", "w-full"},
                 'data_attributes': {},
                 'variant_patterns': {},
-                'style_classes': {"aspect-square", "size-full"}
+                'style_classes': {}
             },
             config={
                 'self_closing': True,
@@ -1134,11 +1134,11 @@ COMPONENTS = {
             name="AvatarFallback",
             tag="span", # Radix AvatarPrimitive.Fallback renders a span
             match_pattern={
-                'signature_classes': set(),
+                'signature_classes': {"bg-muted", "flex", "size-full", "items-center", "justify-center", "rounded-full"},
                 'data_attributes': {},
                 'variant_patterns': {},
                 'style_classes': {
-                    "bg-muted", "flex", "size-full", "items-center", "justify-center", "rounded-full"
+                    
                 }
             },
             config={
@@ -1425,6 +1425,201 @@ COMPONENTS = {
                 'self_closing': False, # Contains text
                 'ignore_children': False,
                 'output_blacklist': {"data-slot"}
+            }
+        ),
+        "Carousel": Component(
+            name="Carousel",
+            tag="div",
+            match_pattern={
+                'signature_classes': {"relative"},
+                'data_attributes': {"data-slot": "carousel"},
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"role", "aria-roledescription", "data-slot"}
+            }
+        ),
+        "CarouselContent": Component(
+            name="CarouselContent",
+            tag="div", # The outer div with overflow-hidden
+            match_pattern={
+                'signature_classes': {"overflow-hidden"},
+                'data_attributes': {"data-slot": "carousel-content"},
+                'variant_patterns': {},
+                'style_classes': set() # Inner div classes depend on orientation
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False, # Contains the inner flex div
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "CarouselItem": Component(
+            name="CarouselItem",
+            tag="div",
+            match_pattern={
+                'signature_classes': {"min-w-0", "shrink-0", "grow-0", "basis-full"},
+                'data_attributes': {"data-slot": "carousel-item"},
+                'variant_patterns': {},
+                # Orientation classes added here as they are applied based on context
+                'style_classes': {"pl-4", "pt-4"}
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"role", "aria-roledescription", "data-slot"}
+            }
+        ),
+        "CarouselPrevious": Component(
+            name="CarouselPrevious",
+            # This component uses the existing Button component,
+            # so we match on the Button tag and the specific data-slot.
+            # Base Button styles are assumed to be matched by the "Button" definition.
+            tag="button",
+            match_pattern={
+                'signature_classes': {
+                    # Include some core Button signature classes if necessary for disambiguation,
+                    # or rely on the data-slot being unique enough.
+                    "absolute", "size-8", "rounded-full" # Added positioning/sizing
+                },
+                'data_attributes': {"data-slot": "carousel-previous"},
+                'variant_patterns': {
+                    # Variant/size are passed to Button, handled by Button definition
+                },
+                'style_classes': {
+                    # Orientation-specific classes
+                    "top-1/2", "-left-12", "-translate-y-1/2", # Horizontal
+                    "-top-12", "left-1/2", "-translate-x-1/2", "rotate-90" # Vertical
+                }
+            },
+            config={
+                'self_closing': False, # Button contains Icon and sr-only span
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "CarouselNext": Component(
+            name="CarouselNext",
+            # Similar to CarouselPrevious, uses the Button component.
+            tag="button",
+            match_pattern={
+                'signature_classes': {
+                    "absolute", "size-8", "rounded-full" # Added positioning/sizing
+                },
+                'data_attributes': {"data-slot": "carousel-next"},
+                'variant_patterns': {
+                    # Variant/size are passed to Button, handled by Button definition
+                },
+                'style_classes': {
+                    # Orientation-specific classes
+                    "top-1/2", "-right-12", "-translate-y-1/2", # Horizontal
+                    "-bottom-12", "left-1/2", "-translate-x-1/2", "rotate-90" # Vertical
+                }
+            },
+            config={
+                'self_closing': False, # Button contains Icon and sr-only span
+                'ignore_children': False,
+                'output_blacklist': {"data-slot"}
+            }
+        ),
+        "CarouselLegacy": Component(
+            name="Carousel",
+            tag="div",
+            match_pattern={
+                'signature_classes': {"relative"},
+                'data_attributes': {"aria-roledescription": "carousel"}, # No data-slot in legacy
+                'variant_patterns': {},
+                'style_classes': set()
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"role", "aria-roledescription"} # Removed data-slot
+            }
+        ),
+        "CarouselContentLegacy": Component(
+            name="CarouselContent",
+            tag="div", # The outer div with overflow-hidden
+            match_pattern={
+                'signature_classes': {"overflow-hidden"},
+                'data_attributes': {}, # No data-slot in legacy
+                'variant_patterns': {},
+                'style_classes': set() # Inner div classes depend on orientation
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False, # Contains the inner flex div
+                'output_blacklist': {} # Removed data-slot
+            }
+        ),
+        # Note: The inner div of CarouselContentLegacy with flex and margins is not defined separately.
+        # It's part of the CarouselContentLegacy component's internal structure.
+        "CarouselItemLegacy": Component(
+            name="CarouselItem",
+            tag="div",
+            match_pattern={
+                'signature_classes': {"min-w-0", "shrink-0", "grow-0", "basis-full"},
+                'data_attributes': {}, # No data-slot in legacy
+                'variant_patterns': {},
+                # Orientation classes added here as they are applied based on context
+                'style_classes': {"pl-4", "pt-4"}
+            },
+            config={
+                'self_closing': False,
+                'ignore_children': False,
+                'output_blacklist': {"role", "aria-roledescription"} # Removed data-slot
+            }
+        ),
+        "CarouselPreviousLegacy": Component(
+            name="CarouselPrevious",
+            # Uses the legacy Button component definition
+            tag="button",
+            match_pattern={
+                'signature_classes': {
+                    # Core legacy Button classes might be needed if ambiguity exists
+                    "absolute", "h-8", "w-8", "rounded-full" # Specific size/positioning
+                },
+                'data_attributes': {}, # No data-slot in legacy
+                'variant_patterns': {
+                    # Assumes variant/size match legacy Button definition
+                },
+                'style_classes': {
+                    # Orientation-specific classes
+                    "top-1/2", "-left-12", "-translate-y-1/2", # Horizontal
+                    "-top-12", "left-1/2", "-translate-x-1/2", "rotate-90" # Vertical
+                }
+            },
+            config={
+                'self_closing': False, # Button contains Icon and sr-only span
+                'ignore_children': False,
+                'output_blacklist': {} # Removed data-slot
+            }
+        ),
+        "CarouselNextLegacy": Component(
+            name="CarouselNext",
+            # Uses the legacy Button component definition
+            tag="button",
+            match_pattern={
+                'signature_classes': {
+                    "absolute", "h-8", "w-8", "rounded-full" # Specific size/positioning
+                },
+                'data_attributes': {}, # No data-slot in legacy
+                'variant_patterns': {
+                    # Assumes variant/size match legacy Button definition
+                },
+                'style_classes': {
+                    # Orientation-specific classes
+                    "top-1/2", "-right-12", "-translate-y-1/2", # Horizontal
+                    "-bottom-12", "left-1/2", "-translate-x-1/2", "rotate-90" # Vertical
+                }
+            },
+            config={
+                'self_closing': False, # Button contains Icon and sr-only span
+                'ignore_children': False,
+                'output_blacklist': {} # Removed data-slot
             }
         ),
     }
